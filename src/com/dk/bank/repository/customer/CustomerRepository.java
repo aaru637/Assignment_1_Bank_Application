@@ -33,4 +33,12 @@ public class CustomerRepository {
     public List<Customer> getAllCustomers() {
         return customers;
     }
+
+    /*
+     * to get customer by username
+     */
+
+     public Customer getCustomer(String username) {
+        return customers.stream().filter(customer -> customer.getUsername().equals(username)).findFirst().orElse(null);
+     }
 }

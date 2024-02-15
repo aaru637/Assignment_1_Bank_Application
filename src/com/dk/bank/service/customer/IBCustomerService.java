@@ -15,12 +15,12 @@ import com.dk.bank.utilities.Utils;
  * IBCustomerService
  */
 public class IBCustomerService implements RBI {
-    CustomerRepository customerRepository = new CustomerRepository();
-    AdminService adminService = new AdminService();
+    private CustomerRepository customerRepository = new CustomerRepository();
+    private AdminService adminService = new AdminService();
     private HelpSupportService hService = new HelpSupportService();
-    Customer customer;
-    double balance;
-    int attempts;
+    private Customer customer;
+    private double balance;
+    private int attempts;
 
     /*
      * Refresh the class
@@ -30,6 +30,13 @@ public class IBCustomerService implements RBI {
         customerRepository = new CustomerRepository();
         balance = 0;
         attempts = 0;
+    }
+
+    /*
+     * to get the customer
+     */
+    public Customer getCustomer() {
+        return customer;
     }
 
     /*
@@ -126,7 +133,7 @@ public class IBCustomerService implements RBI {
      */
     @Override
     public void getComplaints() {
-        hService.complaintsByCustomer(customer.getUsername());
+        hService.getComplaintsByCustomerUsername(customer.getUsername());
     }
 
     /*

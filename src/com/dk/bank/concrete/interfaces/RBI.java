@@ -1,5 +1,7 @@
 package com.dk.bank.concrete.interfaces;
 
+import com.dk.bank.concrete.Customer;
+
 /**
  * RBI
  */
@@ -14,4 +16,5 @@ public interface RBI {
     public void getCustomerStatements();
     public void makeComplaints(String complaint);
     public void getComplaints();
+    public Customer getCustomer();
 }

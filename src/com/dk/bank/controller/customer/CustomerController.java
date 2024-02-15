@@ -1,10 +1,10 @@
 package com.dk.bank.controller.customer;
 
 import java.util.Scanner;
-
 import com.dk.bank.concrete.interfaces.RBI;
 import com.dk.bank.service.customer.IBCustomerService;
 import com.dk.bank.service.customer.IOBCustomerService;
+import com.dk.bank.service.onlineTransaction.OnlineTransactionService;
 import com.dk.bank.utilities.Utils;
 
 /**
@@ -14,6 +14,7 @@ public class CustomerController {
     private RBI bankService;
     private String username, password, bankName, result, complaint;
     private int amount;
+    private OnlineTransactionService oService = new OnlineTransactionService();
 
     private boolean customerLogin(Scanner scan) {
         System.out.print("Enter the username : ");
@@ -117,6 +118,15 @@ public class CustomerController {
                         Utils.singleSpaces();
                         bankService.getComplaints();
                         Utils.singleSpaces();
+                        break;
+
+                    case 7:
+                        System.out.print("Enter the username to send the amount : ");
+                        String username = scan.next();
+                        Utils.singleSpaces();
+                        System.out.print("Enter the amount to be send to the " + username + " : ");
+                        double amount = scan.nextDouble();
+                        System.out.println(oService.onlineTransaction(bankService.getCustomer(), username, amount));
                         break;
 
                     default:

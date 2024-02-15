@@ -89,7 +89,7 @@ public class AdminService {
      * to view the complaints associated to the admin
      */
     public void getComplaints() {
-        hService.complaintToAdmin(admin.getUsername());
+        hService.getComplaintsByAdminUsername(admin.getUsername());
     }
 
     /*
