@@ -4,6 +4,8 @@ import java.util.Scanner;
 
 import com.team1.bank.concrete.Admin;
 import com.team1.bank.concrete.Customer;
+import com.team1.bank.custom_exceptions.AdminNotFoundException;
+import com.team1.bank.custom_exceptions.CustomerNotFoundException;
 import com.team1.bank.service.admin.AdminService;
 import com.team1.bank.utilities.Utils;
 
@@ -25,10 +27,15 @@ public class AdminController {
         System.out.print("Enter the password : ");
         password = scan.next();
         Utils.singleSpaces();
-        return adminService.login(username, password);
+        try {
+            return adminService.login(username, password);
+        } catch (AdminNotFoundException e) {
+            System.out.println(e);
+            return adminLogin(scan);
+        }
     }
 
-    private void getCustomerFrom(Scanner scan) {
+    private void getCustomerData(Scanner scan) {
         Utils.singleSpaces();
         System.out.print("Enter the username of the Customer : ");
         cUsername = scan.next();
@@ -46,64 +53,60 @@ public class AdminController {
     }
 
     public void start(Scanner scan) {
-        if (adminLogin(scan)) {
-            admin = adminService.getAdmin();
-            do {
-                Utils.singleSpaces();
-                Utils.adminMenus();
-                System.out.print("Enter the choice : ");
-                switch (scan.nextInt()) {
-                    case 1:
-                        getCustomerFrom(scan);
-                        System.out.println(customer.getBankName());
-                        result = adminService.addCustomer(customer);
-                        if (result.equals("customer-added")) {
-                            System.out.println("Customer added successfully.!!!");
-                        } else {
-                            System.out.println("Customer-already-enrolled.");
-                        }
-                        Utils.singleSpaces();
-                        break;
+        adminLogin(scan);
+        admin = adminService.getAdmin();
+        do {
+            Utils.singleSpaces();
+            Utils.adminMenus();
+            System.out.print("Enter the choice : ");
+            switch (scan.nextInt()) {
+                case 1:
+                    getCustomerData(scan);
+                    System.out.println(customer.getBankName());
+                    result = adminService.addCustomer(customer);
+                    if (result.equals("customer-added")) {
+                        System.out.println("Customer added successfully.!!!");
+                    } else {
+                        System.out.println("Customer-already-enrolled.");
+                    }
+                    Utils.singleSpaces();
+                    break;
 
-                    case 2:
+                case 2:
+                    try {
                         System.out.print("Enter the username of the customer : ");
                         result = adminService.deleteCustomer(scan.next());
-                        if (result.equals("customer-deleted")) {
-                            System.out.println("Customer deleted successfully.!!!");
-                        } else {
-                            System.out.println("Customer not found.!!!");
-                        }
-                        Utils.singleSpaces();
-                        break;
+                        System.out.println("Customer deleted successfully.!!!");
+                    } catch (CustomerNotFoundException e) {
+                        System.out.println(e);
+                    }
+                    Utils.singleSpaces();
+                    break;
 
-                    case 3:
-                        System.out.println("List of Customers.!");
-                        for (Customer customer : adminService.getCustomers()) {
-                            System.out.println(customer);
-                        }
-                        Utils.singleSpaces();
-                        break;
+                case 3:
+                    System.out.println("List of Customers.!");
+                    for (Customer customer : adminService.getCustomers()) {
+                        System.out.println(customer);
+                    }
+                    Utils.singleSpaces();
+                    break;
 
-                    case 4:
-                        System.out.print("Enter the username of the customer to update the status : ");
-                        adminService.updateComplaint(scan.next());
-                        break;
+                case 4:
+                    System.out.print("Enter the username of the customer to update the status : ");
+                    adminService.updateComplaint(scan.next());
+                    break;
 
-                    case 5:
-                        adminService.getComplaints();
-                        break;
+                case 5:
+                    adminService.getComplaints();
+                    break;
 
-                    default:
-                        System.out.println("Enter valid Choice.!!!");
-                        break;
-                }
-                Utils.endDecorators();
-                Utils.doubleSpaces();
-                System.out.println("Enter 'Y' or 'y' to continue in admin panel : ");
-            } while (scan.next().toLowerCase().charAt(0) == 'y');
-        } else {
-            System.out.println("Unauthorized user.!!!");
-            start(scan);
-        }
+                default:
+                    System.out.println("Enter valid Choice.!!!");
+                    break;
+            }
+            Utils.endDecorators();
+            Utils.doubleSpaces();
+            System.out.println("Enter 'Y' or 'y' to continue in admin panel : ");
+        } while (scan.next().toLowerCase().charAt(0) == 'y');
     }
 }

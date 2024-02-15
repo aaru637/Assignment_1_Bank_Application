@@ -5,6 +5,8 @@ import java.util.stream.Collectors;
 
 import com.team1.bank.concrete.Admin;
 import com.team1.bank.concrete.Customer;
+import com.team1.bank.custom_exceptions.AdminNotFoundException;
+import com.team1.bank.custom_exceptions.CustomerNotFoundException;
 import com.team1.bank.repository.admin.AdminRepsoitory;
 import com.team1.bank.repository.customer.CustomerRepository;
 import com.team1.bank.service.helpSupport.HelpSupportService;
@@ -28,7 +30,7 @@ public class AdminService {
             return true;
         }
         else {
-            return false;
+            throw new AdminNotFoundException("Admin Not Found.!!!");
         }
     }
 
@@ -69,7 +71,7 @@ public class AdminService {
                 return "customer-deleted";
             }
         }
-        return "customer-not-found";
+        throw new CustomerNotFoundException("Customer Not Found");
     }
 
     /*

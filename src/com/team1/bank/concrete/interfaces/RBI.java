@@ -8,8 +8,8 @@ import com.team1.bank.concrete.Customer;
 public interface RBI {
 
     public void showBalance();
-    public String deposit(double amount);
-    public String withdraw(double amount);
+    public boolean deposit(double amount);
+    public boolean withdraw(double amount);
     public boolean login(String username, String password);
     public void remainingAttempts();
     public void refresh();

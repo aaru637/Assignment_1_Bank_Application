@@ -6,6 +6,9 @@ import java.util.List;
 import com.team1.bank.concrete.BankStatement;
 import com.team1.bank.concrete.Customer;
 import com.team1.bank.concrete.interfaces.RBI;
+import com.team1.bank.custom_exceptions.InvalidAmountException;
+import com.team1.bank.custom_exceptions.ReachedDepositAttemptsException;
+import com.team1.bank.custom_exceptions.ReachedWithdrawAttemptsException;
 import com.team1.bank.repository.config.BankConfigData;
 import com.team1.bank.repository.customer.CustomerRepository;
 import com.team1.bank.service.admin.AdminService;
@@ -67,18 +70,18 @@ public class IOBCustomerService implements RBI {
      * to deposit the amount to the customer account
      */
     @Override
-    public String deposit(double amount) {
+    public boolean deposit(double amount) {
         if (customer.getDepositAttempts() > 0) {
             balance = customer.getBalance();
-            balance += ((amount) - (amount * BankConfigData.IOBdeposit) / 100);
+            balance += ((amount) - (amount * BankConfigData.IOB_DEPOSIT) / 100);
             customer.setBalance(balance);
             reduceDepositAttempts();
             BankStatement statement = new BankStatement(customer.getUsername(), "deposit", amount,
                     customer.getBalance(), LocalDateTime.now(), customer.getBankName());
             customer.setStatements(statement);
-            return "deposited-success";
+            return true;
         } else {
-            return "attempts-expired";
+            throw new ReachedDepositAttemptsException("You used your 3 deposit attempts already ");
         }
     }
 
@@ -86,20 +89,17 @@ public class IOBCustomerService implements RBI {
      * to withdraw the amount from the customer account.
      */
     @Override
-    public String withdraw(double amount) {
+    public boolean withdraw(double amount) {
         if (customer.getWithdrawAttempts() > 0) {
             if (minimumBalanceChecker(amount)) {
                 reduceWithdrawAttempts();
-                BankStatement statement = new BankStatement(customer.getUsername(), "withdraw", amount,
-                        customer.getBalance(), LocalDateTime.now(), customer.getBankName());
-                customer.setStatements(statement);
-                return "withdrawn-success";
+                return true;
             } else {
                 reduceWithdrawAttempts();
-                return "low-min-balance";
+                throw new InvalidAmountException("You have low balance in your account. please mention other amounts.");
             }
         } else {
-            return "attempts_expired";
+            throw new ReachedWithdrawAttemptsException("You used your 3 withdraw attempts already.");
         }
     }
 
@@ -148,8 +148,8 @@ public class IOBCustomerService implements RBI {
      * used to check the minimum balance of the user.
      */
     private boolean minimumBalanceChecker(double amount) {
-        balance = customer.getBalance() - BankConfigData.IOBminimumBalanceAmount;
-        amount = ((amount) - (amount * BankConfigData.IOBwithdraw) / 100);
+        balance = customer.getBalance() - BankConfigData.IOB_MINIMUM_BALANCE;
+        amount = ((amount) - (amount * BankConfigData.IOB_WITHDRAW) / 100);
         if (amount < balance) {
             balance -= amount;
             customer.setBalance(balance);
