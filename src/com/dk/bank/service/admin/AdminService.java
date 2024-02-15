@@ -2,6 +2,7 @@ package com.dk.bank.service.admin;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.dk.bank.concrete.Admin;
 import com.dk.bank.concrete.Customer;
@@ -43,13 +44,7 @@ public class AdminService {
      * to get all the customers under the admin bank
      */
     public List<Customer> getCustomers() {
-        List<Customer> temp = new LinkedList<Customer>();
-        for(Customer customer : customers) {
-            if(customer.getBankName().equals(admin.getBankName())) {
-                temp.add(customer);
-            }
-        }
-        return temp;
+        return customers.stream().filter(customer -> customer.getBankName().equals(admin.getBankName())).collect(Collectors.toList());
     }
 
     /*

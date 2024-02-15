@@ -19,12 +19,7 @@ public class CustomerRepository {
      * To get a particular customer data.
      */
     public Customer getCustomer(String username, String password) {
-        for(Customer customer : customers) {
-            if(customer.getUsername().equals(username) && customer.getPassword().equals(password)) {
-                return customer;
-            }
-        }
-        return null;
+        return customers.stream().filter(customer -> customer.getUsername().equals(username) && customer.getPassword().equals(password)).findFirst().orElse(null);
     }
 
     /*
@@ -35,7 +30,7 @@ public class CustomerRepository {
     }
 
     /*
-     * to get customer by username
+     * to get customer by username only.
      */
 
      public Customer getCustomer(String username) {

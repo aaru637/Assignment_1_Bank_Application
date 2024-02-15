@@ -17,24 +17,14 @@ public class AdminRepsoitory {
      * To get the particular admin data.
      */
     public Admin getAdmin(String username, String password) {
-        for (Admin admin : admins) {
-            if (username.equals(admin.getUsername()) && password.equals(admin.getPassword())) {
-                return admin;
-            }
-        }
-        return null;
+        return admins.stream().filter(admin -> admin.getUsername().equals(username) && admin.getPassword().equals(password)).findFirst().orElse(null);
     }
 
     /*
      * to get the admin using the bank name
      */
     public Admin getAdminUsername(String bank) {
-        for (Admin admin : admins) {
-            if(admin.getBankName().equals(bank)) {
-                return admin;
-            }
-        }
-        return null;
+        return admins.stream().filter(admin -> admin.getBankName().equals(bank)).findFirst().orElse(null);
     }
 
     /*
